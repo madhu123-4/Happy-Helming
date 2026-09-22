@@ -1,0 +1,64 @@
+    name: Reusable Helm deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: GitHub Environment that protects this deployment.
+        required: true
+        type: string
+      chart_directory:
+        description: Path to the Helm chart in the calling repository.
+        required: true
+        type: string
+      release_name:
+        required: true
+        type: string
+      namespace:
+        required: true
+        type: string
+      image_tag:
+        description: Image tag to apply to all application images.
+        required: true
+        type: string
+      timeout:
+        description: Helm timeout in minutes.
+        required: false
+        default: 10
+        type: number
+    secrets:
+      KUBECONFIG_BASE64:
+        description: Base64-encoded kubeconfig for the target cluster.
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout }}
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Configure Kubernetes access
+        env:
+          KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG_BASE64 }}
+        run: |
+          echo "$KUBECONFIG_BASE64" | base64 --decode > "$RUNNER_TEMP/kubeconfig"
+          chmod 600 "$RUNNER_TEMP/kubeconfig"
+
+      - name: Deploy release
+        env:
+          KUBECONFIG: ${{ runner.temp }}/kubeconfig
+        run: |
+          helm upgrade --install "${{ inputs.release_name }}" "${{ inputs.chart_directory }}" \
+            --namespace "${{ inputs.namespace }}" \
+            --create-namespace \
+            --set-string global.imageTag="${{ inputs.image_tag }}" \
+            --wait \
+            --timeout "${{ inputs.timeout }}m"
