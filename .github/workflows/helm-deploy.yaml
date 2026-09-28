@@ -7,25 +7,31 @@ on:
         description: GitHub Environment that protects this deployment.
         required: true
         type: string
+
       chart_directory:
         description: Path to the Helm chart in the calling repository.
         required: true
         type: string
+
       release_name:
         required: true
         type: string
+
       namespace:
         required: true
         type: string
+
       image_tag:
         description: Image tag to apply to all application images.
         required: true
         type: string
+
       timeout:
         description: Helm timeout in minutes.
         required: false
         default: 10
         type: number
+
     secrets:
       KUBECONFIG_BASE64:
         description: Base64-encoded kubeconfig for the target cluster.
@@ -39,6 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.timeout }}
     environment: ${{ inputs.environment }}
+
     steps:
       - uses: actions/checkout@v4
 
