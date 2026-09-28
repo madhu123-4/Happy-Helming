@@ -1,4 +1,4 @@
-    name: Reusable Helm deploy
+name: Reusable Helm deploy
 
 on:
   workflow_call:
