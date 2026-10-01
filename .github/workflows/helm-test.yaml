@@ -13,9 +13,6 @@ on:
         default: 10
         type: number
 
-permissions:
-  contents: read
-
 jobs:
   lint-and-render:
     runs-on: ubuntu-latest

@@ -1,11 +1,7 @@
 name: Calculate Version
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
+  workflow_call:
 
 jobs:
   calculate-version:
@@ -25,6 +21,11 @@ jobs:
 
           CURRENT_VERSION=$(git tag --list '[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1)
 
+          # If there are no existing version tags, start from 0.0.0
+          if [ -z "$CURRENT_VERSION" ]; then
+            CURRENT_VERSION="0.0.0"
+          fi
+
           echo "Current Version: $CURRENT_VERSION"
 
           COMMIT_MESSAGE=$(git log -1 --pretty=%B)
@@ -33,10 +34,13 @@ jobs:
 
           if [[ "$COMMIT_MESSAGE" =~ ^major([:\ ]|$) ]]; then
             BUMP_TYPE="major"
+
           elif [[ "$COMMIT_MESSAGE" =~ ^minor([:\ ]|$) ]]; then
             BUMP_TYPE="minor"
+
           elif [[ "$COMMIT_MESSAGE" =~ ^patch([:\ ]|$) ]]; then
             BUMP_TYPE="patch"
+
           else
             echo "Commit message must start with major, minor, or patch"
             exit 1

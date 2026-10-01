@@ -37,8 +37,6 @@ on:
         description: Base64-encoded kubeconfig for the target cluster.
         required: true
 
-permissions:
-  contents: read
 
 jobs:
   deploy:
