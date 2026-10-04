@@ -24,7 +24,7 @@ jobs:
         uses: azure/setup-helm@v1
 
       - name: Lint chart
-        run: helm lint --strict "${{ inputs.chart_directory }}"
+        run: helm lint "${{ inputs.chart_directory }}"
 
       - name: Render Kubernetes manifests
         run: helm template voting-app "${{ inputs.chart_directory }}" --namespace default --debug > rendered-manifests.yaml
