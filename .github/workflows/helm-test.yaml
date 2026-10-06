@@ -23,13 +23,9 @@ jobs:
         run: |
          hostname
          whoami
-         Get-Command helm
          helm version
 
       - uses: actions/checkout@v4
-
-      - name: Set up Helm
-        uses: azure/setup-helm@v5
 
       - name: Lint chart
         run: helm lint "${{ inputs.chart_directory }}"
