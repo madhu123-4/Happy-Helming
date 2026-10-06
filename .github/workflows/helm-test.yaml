@@ -18,6 +18,14 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: ${{ inputs.timeout }}
     steps:
+      - name: Verify Helm on Azure VM runner
+        shell: powershell
+        run: |
+         hostname
+         whoami
+         Get-Command helm
+         helm version
+
       - uses: actions/checkout@v4
 
       - name: Set up Helm
