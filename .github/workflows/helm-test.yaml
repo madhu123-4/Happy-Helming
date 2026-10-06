@@ -12,10 +12,14 @@ on:
         required: false
         default: 10
         type: number
-
+      helm_container:
+        description: The container image to use for Helm testing.
+        required: false
+        default: "alpine/helm 
 jobs:
   lint-and-render:
     runs-on: self-hosted
+    container: "${{ inputs.helm_container }}"
     timeout-minutes: ${{ inputs.timeout }}
     steps:
       - name: Verify Helm on Azure VM runner
