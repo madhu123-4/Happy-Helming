@@ -15,7 +15,8 @@ on:
       helm_container:
         description: The container image to use for Helm testing.
         required: false
-        default: "alpine/helm 
+        default: "alpine/helm:3.10.0"
+        type: string
 jobs:
   lint-and-render:
     runs-on: self-hosted
